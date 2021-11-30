@@ -20,8 +20,9 @@ class Project(QWidget):
 
         self.button = QPushButton('Нажми', self)
         self.button.move(750, 450)
-        self.button.setFixedSize(100, 50)
+        self.button.setFixedSize(100, 30)
         self.button.clicked.connect(self.prr)
+        self.button.setStyleSheet('background: rgb(255,204,0);')
 
         self.win = QLineEdit(self)
         self.win.setFixedSize(200, 30)
@@ -31,6 +32,7 @@ class Project(QWidget):
     def prr(self):
         self.test.setText('Успешно')
         self.test.setFont(QFont('Arial', 72))
+        self.win.setStyleSheet('background: rgb(200, 100, 100);')
 
 
 if __name__ == '__main__':
