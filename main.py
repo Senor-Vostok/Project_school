@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QFontDatabase, QCursor, QCloseEvent
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.Qt import Qt
@@ -12,37 +12,54 @@ class Project(QWidget):
 
     def initUI(self):
         self.setWindowTitle('Project')
-        self.setFixedSize(1600, 900)
+        self.setFixedSize(1280, 720)
 
-        self.test = QLabel('Регистрация/вход', self)
-        self.test.move(100, 100)
-        self.test.setFont(QFont('Arial', 72))
-
-        self.button = QPushButton('Нажми', self)
-        self.button.move(750, 450)
-        self.button.setFixedSize(100, 30)
-        self.button.clicked.connect(self.check)
-        self.button.setStyleSheet('background: rgb(255,204,0);')
-
-        self.info = QLabel('Введите корректные данные пользователя!', self)
-        self.info.setStyleSheet('background: rgb(255,0,0);')
+        self.info = QLabel('<font color="red">Введите корректные данные пользователя!', self)
         self.info.setFont(QFont('Arial', 10))
         self.info.move(50, 850)
         self.info.hide()
 
-        self.win = QLineEdit(self)
-        self.win.setFixedSize(200, 30)
-        self.win.move(700, 400)
+        self.log = QLineEdit(self)
+        self.log.setPlaceholderText('Логин пользователя')
+        self.log.move(50, 620)
+        self.log.setFixedSize(500, 30)
 
+        self.pas = QLineEdit(self)
+        self.pas.setPlaceholderText('Пароль пользователя')
+        self.pas.move(50, 655)
+        self.pas.setFixedSize(500, 30)
+
+        self.button = QPushButton('Нажми', self)
+        self.button.setFixedSize(65, 65)
+        self.button.move(555, 620)
+        self.button.clicked.connect(self.check)
+        self.button.setStyleSheet('background: rgb(255,204,0);')
+
+        self.button1 = QPushButton('Регистрация', self)
+        self.button1.setFixedSize(200, 30)
+        self.button1.move(625, 655)
+        self.button1.clicked.connect(self.register)
+        self.button1.setStyleSheet('background: rgb(255,204,0);')
+
+        self.button2 = QPushButton('Забыли пароль?', self)
+        self.button2.setFixedSize(200, 30)
+        self.button2.move(625, 620)
+        self.button2.setStyleSheet('background: rgb(255,204,0);')
+
+    def register(self):
+        pass
 
     def check(self):
-        self.text = self.win.text()
-        if not self.text:
+        self.login = self.log.text()
+        self.password = self.pas.text()
+        if not self.login or not self.password:
             self.info.show()
-            self.win.setStyleSheet('background: rgb(255, 200, 200);')
+            self.log.setStyleSheet('background: rgb(255, 200, 200);')
+            self.pas.setStyleSheet('background: rgb(255, 200, 200);')
         else:
             self.info.hide()
-            self.win.setStyleSheet('background: rgb(200, 255, 200);')
+            self.log.setStyleSheet('background: rgb(200, 255, 200);')
+            self.pas.setStyleSheet('background: rgb(200, 255, 200);')
 
 
 if __name__ == '__main__':
