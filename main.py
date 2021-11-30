@@ -13,8 +13,8 @@ class Project(QWidget):
         self.setWindowTitle('Project')
         self.setFixedSize(1600, 900)
         self.test = QLabel('Проверка заданий', self)
-        self.test.move(100, 100)
-        self.test.setFont(QFont('Arial', 72))
+        self.test.move(800, 450)
+        self.test.setFont(QFont('Arial', 50))
 
 
 if __name__ == '__main__':  # запуск всего!
