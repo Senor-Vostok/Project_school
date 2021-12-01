@@ -16,7 +16,7 @@ class Project(QWidget):
 
         self.info = QLabel('<font color="red">Введите корректные данные пользователя!', self)
         self.info.setFont(QFont('Arial', 10))
-        self.info.move(50, 850)
+        self.info.move(50, 690)
         self.info.hide()
 
         self.log = QLineEdit(self)
@@ -46,6 +46,16 @@ class Project(QWidget):
         self.button2.move(625, 620)
         self.button2.setStyleSheet('background: rgb(255,204,0);')
 
+        self.all_widget = [self.log, self.pas, self.button, self.button1, self.button2]
+
+    def hide_menu(self, flag, spisok):
+        if flag:
+            for i in spisok:
+                i.hide()
+        else:
+            for i in spisok:
+                i.show()
+
     def register(self):
         pass
 
@@ -58,12 +68,24 @@ class Project(QWidget):
             self.pas.setStyleSheet('background: rgb(255, 200, 200);')
         else:
             self.info.hide()
-            self.log.setStyleSheet('background: rgb(200, 255, 200);')
-            self.pas.setStyleSheet('background: rgb(200, 255, 200);')
+            self.hide_menu(True, self.all_widget)
+            if self.login.lower() == 'ученик':
+                self.stude()
+            elif self.login.lower() == 'учитель':
+                self.teach()
+            else:
+                self.info.show()
+                self.hide_menu(False, self.all_widget)
+
+    def stude(self):
+        pass
+
+    def teach(self):
+        pass
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    progarmm = Project()
-    progarmm.show()
+    progarm = Project()
+    progarm.show()
     sys.exit(app.exec())
