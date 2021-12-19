@@ -14,6 +14,9 @@ class Project(QWidget):
         self.setWindowTitle('Project')
         self.setFixedSize(1280, 720)
 
+        self.fon = QLabel(self)
+        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
+
         self.info = QLabel('<font color="red">Введите корректные данные пользователя!', self)
         self.info.setFont(QFont('Arial', 10))
         self.info.move(50, 690)
@@ -29,22 +32,22 @@ class Project(QWidget):
         self.pas.move(50, 655)
         self.pas.setFixedSize(500, 30)
 
-        self.button = QPushButton('Нажми', self)
+        self.button = QPushButton('Ввод', self)
         self.button.setFixedSize(65, 65)
         self.button.move(555, 620)
         self.button.clicked.connect(self.check)
-        self.button.setStyleSheet('background: rgb(255,204,0);')
+        self.button.setStyleSheet('background: #660BAB;')
 
         self.button1 = QPushButton('Регистрация', self)
         self.button1.setFixedSize(200, 30)
         self.button1.move(625, 655)
         self.button1.clicked.connect(self.register)
-        self.button1.setStyleSheet('background: rgb(255,204,0);')
+        self.button1.setStyleSheet('background: #660BAB;')
 
         self.button2 = QPushButton('Забыли пароль?', self)
         self.button2.setFixedSize(200, 30)
         self.button2.move(625, 620)
-        self.button2.setStyleSheet('background: rgb(255,204,0);')
+        self.button2.setStyleSheet('background: #660BAB;')
 
         self.all_widget = [self.log, self.pas, self.button, self.button1, self.button2]
 
