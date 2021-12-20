@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QFontDatabase, QCursor, QCloseEvent
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.Qt import Qt
@@ -18,36 +18,43 @@ class Project(QWidget):
         self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
 
         self.info = QLabel('<font color="red">Введите корректные данные пользователя!', self)
-        self.info.setFont(QFont('Arial', 10))
+        self.info.setFont(QFont('Intro Cond Black Free', 10))
         self.info.move(50, 690)
         self.info.hide()
 
         self.log = QLineEdit(self)
         self.log.setPlaceholderText('Логин пользователя')
+        self.log.setFont(QFont('Intro Cond Black Free', 10))
         self.log.move(50, 620)
         self.log.setFixedSize(500, 30)
 
         self.pas = QLineEdit(self)
         self.pas.setPlaceholderText('Пароль пользователя')
+        self.pas.setFont(QFont('Intro Cond Black Free', 10))
         self.pas.move(50, 655)
         self.pas.setFixedSize(500, 30)
 
         self.button = QPushButton('Ввод', self)
+        self.button.setFont(QFont('Intro Cond Black Free', 10))
         self.button.setFixedSize(65, 65)
         self.button.move(555, 620)
         self.button.clicked.connect(self.check)
-        self.button.setStyleSheet('background: #660BAB;')
+        self.button.setStyleSheet('background: #4671D5;')
 
         self.button1 = QPushButton('Регистрация', self)
+        self.button1.setFont(QFont('Intro Cond Black Free', 10))
         self.button1.setFixedSize(200, 30)
         self.button1.move(625, 655)
         self.button1.clicked.connect(self.register)
-        self.button1.setStyleSheet('background: #660BAB;')
+        self.button1.setStyleSheet('background: #4671D5;')
 
         self.button2 = QPushButton('Забыли пароль?', self)
+        self.button2.setFont(QFont('Intro Cond Black Free', 10))
         self.button2.setFixedSize(200, 30)
         self.button2.move(625, 620)
-        self.button2.setStyleSheet('background: #660BAB;')
+        self.button2.setStyleSheet('background: #4671D5;')
+
+        self.teacher_or_student = None
 
         self.all_widget = [self.log, self.pas, self.button, self.button1, self.button2]
 
@@ -80,15 +87,66 @@ class Project(QWidget):
                 self.info.show()
                 self.hide_menu(False, self.all_widget)
 
+    def menu(self):
+        if self.teacher_or_student:
+            for i in self.main_widget_teacher:
+                i.hide()
+        self.hide_menu(False, self.all_widget)
+        self.teacher_or_student = False
+
     def stude(self):
         pass
 
     def teach(self):
-        pass
+        if self.teacher_or_student != None:
+            for i in self.main_widget_teacher:
+                i.show()
+        else:
+            self.bt1 = QPushButton('Главная', self)
+            self.bt1.setFont(QFont('Intro Cond Black Free', 20))
+
+            self.bt2 = QPushButton('Ваши данные', self)
+            self.bt2.setFont(QFont('Intro Cond Black Free', 20))
+
+            self.bt3 = QPushButton('Ошибка?', self)
+            self.bt3.setFont(QFont('Intro Cond Black Free', 20))
+
+            self.bt_create = QPushButton('Создать', self)
+            self.bt_create.setFont(QFont('Intro Cond Black Free', 30))
+            self.bt_create.setFixedSize(640, 200)
+
+            self.bt_bd = QPushButton('Данные учеников', self)
+            self.bt_bd.setFont(QFont('Intro Cond Black Free', 30))
+            self.bt_bd.setFixedSize(640, 200)
+
+            self.bt_result = QPushButton('Оценки учеников \nза работы', self)
+            self.bt_result.setFont(QFont('Intro Cond Black Free', 30))
+            self.bt_result.setFixedSize(640, 200)
+
+            self.main_stick = QVBoxLayout(self)
+
+            self.stick1 = QHBoxLayout(self)
+            self.stick1.addWidget(self.bt1)
+            self.stick1.addWidget(self.bt2)
+            self.stick1.addWidget(self.bt3)
+
+            self.main_stick.addLayout(self.stick1)
+            self.main_stick.addWidget(self.bt_create, alignment=Qt.AlignLeft)
+            self.main_stick.addWidget(self.bt_bd, alignment=Qt.AlignLeft)
+            self.main_stick.addWidget(self.bt_result, alignment=Qt.AlignLeft)
+
+            self.main_widget_teacher = [self.bt1, self.bt2, self.bt3, self.bt_create, self.bt_bd, self.bt_result]
+
+            for i in self.main_widget_teacher:
+                i.setStyleSheet('background: #4671D5;')
+
+            self.bt1.clicked.connect(self.menu)
+        self.teacher_or_student = True
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    QFontDatabase.addApplicationFont('IntroCondBlackFree.ttf')
     progarm = Project()
     progarm.show()
     sys.exit(app.exec())
