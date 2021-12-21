@@ -13,28 +13,23 @@ class Project(QWidget):
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
         self.bt1.setFont(QFont('Intro Cond Black Free', 20))
+        self.bt1.move(1200, 0)
         self.bt2 = QPushButton('Ваши данные', self)
         self.bt2.setFont(QFont('Intro Cond Black Free', 20))
         self.bt3 = QPushButton('Ошибка?', self)
         self.bt3.setFont(QFont('Intro Cond Black Free', 20))
         self.bt_create = QPushButton('Создать', self)
         self.bt_create.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_create.setFixedSize(462, 200)
+        self.bt_create.setFixedSize(462, 140)
+        self.bt_create.move(-462, 216)
         self.bt_bd = QPushButton('Данные учеников', self)
         self.bt_bd.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_bd.setFixedSize(462, 200)
+        self.bt_bd.setFixedSize(462, 140)
+        self.bt_bd.move(-462, 360)
         self.bt_result = QPushButton('Оценки учеников \nза работы', self)
         self.bt_result.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_result.setFixedSize(462, 200)
-        self.main_stick = QVBoxLayout(self)
-        self.stick1 = QHBoxLayout(self)
-        self.stick1.addWidget(self.bt1)
-        self.stick1.addWidget(self.bt2)
-        self.stick1.addWidget(self.bt3)
-        self.main_stick.addLayout(self.stick1)
-        self.main_stick.addWidget(self.bt_create, alignment=Qt.AlignLeft)
-        self.main_stick.addWidget(self.bt_bd, alignment=Qt.AlignLeft)
-        self.main_stick.addWidget(self.bt_result, alignment=Qt.AlignLeft)
+        self.bt_result.setFixedSize(462, 140)
+        self.bt_result.move(-462, 504)
         self.main_widget = [self.bt1, self.bt2, self.bt3, self.bt_create, self.bt_bd, self.bt_result]
         for i in self.main_widget:
             i.setStyleSheet('background: #19A3F5;')
@@ -88,8 +83,24 @@ class Project(QWidget):
         self.teacher_or_student = None
 
         self.all_widget = [self.log, self.pas, self.button, self.button1, self.button2]
+
+        self.timer_anim = QTimer(self)
+        self.timer_anim.setInterval(1)
+        self.cord0 = -462
+        self.timer_anim.timeout.connect(self.animation)
+
         self.start_kit()
         self.menu()
+
+    def animation(self):
+        self.timer_anim.start()
+        if self.cord0 < 10:
+            self.cord0 += 2
+            for i in [self.bt_create, self.bt_bd, self.bt_result]:
+                i.move(self.cord0, i.pos().y())
+        else:
+            self.timer_anim.stop()
+            self.cord0 = -462
 
     def hide_menu(self, flag, spisok):
         if flag:
@@ -125,15 +136,17 @@ class Project(QWidget):
         self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
 
     def stude(self):
+        self.animation()
         self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
         self.bt_create.setText('Решить')
         self.bt_bd.setText('Предметы')
-        self.bt_result.setText('Решённые')
+        self.bt_result.setText('Решенные')
         for i in self.main_widget:
             i.show()
         self.teacher_or_student = True
 
     def teach(self):
+        self.animation()
         self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
         self.bt_create.setText('Создать')
         self.bt_bd.setText('Данные учеников')
