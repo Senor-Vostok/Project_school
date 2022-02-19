@@ -23,24 +23,24 @@ class Project(QWidget):
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
         self.bt1.setFixedSize(200, 30)
-        self.bt1.setFont(QFont('Intro Cond Black Free', 20))
-        self.bt1.move(340, 40)
+        self.bt1.setFont(QFont('Intro Cond Black Free', 10))
+        self.bt1.move(40, 610)
         self.bt2 = QPushButton('Ваши данные', self)
-        self.bt2.setFont(QFont('Intro Cond Black Free', 20))
+        self.bt2.setFont(QFont('Intro Cond Black Free', 10))
         self.bt2.setFixedSize(200, 30)
-        self.bt2.move(540, 40)
+        self.bt2.move(240, 610)
         self.bt3 = QPushButton('Ошибка?', self)
-        self.bt3.setFont(QFont('Intro Cond Black Free', 20))
+        self.bt3.setFont(QFont('Intro Cond Black Free', 10))
         self.bt3.setFixedSize(200, 30)
-        self.bt3.move(740, 40)
+        self.bt3.move(440, 610)
         self.bt_create = QPushButton('Создать', self)
-        self.bt_create.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_create.setFixedSize(400, 40)
-        self.bt_create.move(440, 390)
+        self.bt_create.setFont(QFont('Intro Cond Black Free', 20))
+        self.bt_create.setFixedSize(600, 40)
+        self.bt_create.move(40, 645)
         self.bt_create.clicked.connect(self.doit)
         self.main_widget = [self.bt1, self.bt2, self.bt3, self.bt_create]
         for i in self.main_widget:
-            i.setStyleSheet('background: #19A3F5;')
+            i.setStyleSheet('background: #FFDD33;')
         self.bt1.clicked.connect(self.menu)
 
     def doit(self):
@@ -81,20 +81,20 @@ class Project(QWidget):
         self.button.setFixedSize(65, 65)
         self.button.move(555, 620)
         self.button.clicked.connect(self.check)
-        self.button.setStyleSheet('background: #19A3F5;')
+        self.button.setStyleSheet('background: #FFDD33;')
 
         self.button1 = QPushButton('Регистрация', self)
         self.button1.setFont(QFont('Intro Cond Black Free', 10))
         self.button1.setFixedSize(200, 30)
         self.button1.move(625, 655)
         self.button1.clicked.connect(self.register)
-        self.button1.setStyleSheet('background: #19A3F5;')
+        self.button1.setStyleSheet('background: #FFDD33;')
 
         self.button2 = QPushButton('Забыли пароль?', self)
         self.button2.setFont(QFont('Intro Cond Black Free', 10))
         self.button2.setFixedSize(200, 30)
         self.button2.move(625, 620)
-        self.button2.setStyleSheet('background: #19A3F5;')
+        self.button2.setStyleSheet('background: #FFDD33;')
 
         self.teacher_or_student = None
 
@@ -137,14 +137,14 @@ class Project(QWidget):
         self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
 
     def stude(self):
-        self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
         self.bt_create.setText('Решить')
         for i in self.main_widget:
             i.show()
         self.teacher_or_student = True
 
     def teach(self):
-        self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
         self.bt_create.setText('Создать')
         for i in self.main_widget:
             i.show()
