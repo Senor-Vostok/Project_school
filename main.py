@@ -1,8 +1,18 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout, QFileDialog
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QFontDatabase, QCursor, QCloseEvent
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.Qt import Qt
 import sys
+
+
+class Create_work(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.UI()
+
+    def UI(self):
+        self.setWindowTitle('Project')
+        self.setFixedSize(1280, 720)
 
 
 class Project(QWidget):
@@ -12,28 +22,34 @@ class Project(QWidget):
 
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
+        self.bt1.setFixedSize(200, 30)
         self.bt1.setFont(QFont('Intro Cond Black Free', 20))
-        self.bt1.move(1200, 0)
+        self.bt1.move(340, 40)
         self.bt2 = QPushButton('Ваши данные', self)
         self.bt2.setFont(QFont('Intro Cond Black Free', 20))
+        self.bt2.setFixedSize(200, 30)
+        self.bt2.move(540, 40)
         self.bt3 = QPushButton('Ошибка?', self)
         self.bt3.setFont(QFont('Intro Cond Black Free', 20))
+        self.bt3.setFixedSize(200, 30)
+        self.bt3.move(740, 40)
         self.bt_create = QPushButton('Создать', self)
         self.bt_create.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_create.setFixedSize(462, 140)
-        self.bt_create.move(-462, 216)
-        self.bt_bd = QPushButton('Данные учеников', self)
-        self.bt_bd.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_bd.setFixedSize(462, 140)
-        self.bt_bd.move(-462, 360)
-        self.bt_result = QPushButton('Оценки учеников \nза работы', self)
-        self.bt_result.setFont(QFont('Intro Cond Black Free', 30))
-        self.bt_result.setFixedSize(462, 140)
-        self.bt_result.move(-462, 504)
-        self.main_widget = [self.bt1, self.bt2, self.bt3, self.bt_create, self.bt_bd, self.bt_result]
+        self.bt_create.setFixedSize(400, 40)
+        self.bt_create.move(440, 390)
+        self.bt_create.clicked.connect(self.doit)
+        self.main_widget = [self.bt1, self.bt2, self.bt3, self.bt_create]
         for i in self.main_widget:
             i.setStyleSheet('background: #19A3F5;')
         self.bt1.clicked.connect(self.menu)
+
+    def doit(self):
+        if self.bt_create.text().lower() == 'решить':
+            name = QFileDialog.getOpenFileName(self, "Выберите файл", ".")
+            print(name)
+        else:
+            self.redactor = Create_work()
+            self.redactor.show()
 
     def initUI(self):
         self.setWindowTitle('Project')
@@ -84,23 +100,8 @@ class Project(QWidget):
 
         self.all_widget = [self.log, self.pas, self.button, self.button1, self.button2]
 
-        self.timer_anim = QTimer(self)
-        self.timer_anim.setInterval(1)
-        self.cord0 = -462
-        self.timer_anim.timeout.connect(self.animation)
-
         self.start_kit()
         self.menu()
-
-    def animation(self):
-        self.timer_anim.start()
-        if self.cord0 < 10:
-            self.cord0 += 2
-            for i in [self.bt_create, self.bt_bd, self.bt_result]:
-                i.move(self.cord0, i.pos().y())
-        else:
-            self.timer_anim.stop()
-            self.cord0 = -462
 
     def hide_menu(self, flag, spisok):
         if flag:
@@ -121,9 +122,9 @@ class Project(QWidget):
         else:
             self.info.hide()
             self.hide_menu(True, self.all_widget)
-            if self.login.lower() == 'ученик':
+            if self.login.lower() == '1':
                 self.stude()
-            elif self.login.lower() == 'учитель':
+            elif self.login.lower() == '2':
                 self.teach()
             else:
                 self.info.show()
@@ -136,21 +137,15 @@ class Project(QWidget):
         self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
 
     def stude(self):
-        self.animation()
         self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
         self.bt_create.setText('Решить')
-        self.bt_bd.setText('Предметы')
-        self.bt_result.setText('Решенные')
         for i in self.main_widget:
             i.show()
         self.teacher_or_student = True
 
     def teach(self):
-        self.animation()
         self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
         self.bt_create.setText('Создать')
-        self.bt_bd.setText('Данные учеников')
-        self.bt_result.setText('Результаты учеников\nпо работе')
         for i in self.main_widget:
             i.show()
         self.teacher_or_student = True
