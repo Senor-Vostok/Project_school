@@ -13,10 +13,14 @@ class Create_work(QWidget):
     def UI(self):
         self.setWindowTitle('Lös-учитель')
         self.setFixedSize(1280, 720)
+        self.fon = QLabel(self)
+        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
+        self.fon.setFixedSize(1280, 720)
         self.back = QPushButton('<', self)
         self.back.setFont(QFont('', 20))
         self.back.setFixedSize(30, 200)
         self.back.move(0, 260)
+        self.back.setStyleSheet('background: #808080;')
         self.back.clicked.connect(self.backlist)
         self.back.setEnabled(False)
         self.next = QPushButton('>', self)
@@ -25,6 +29,7 @@ class Create_work(QWidget):
         self.next.move(1250, 260)
         self.next.clicked.connect(self.nextlist)
         self.next.setEnabled(False)
+        self.next.setStyleSheet('background: #808080;')
         self.createqw = QLineEdit(self)
         self.createqw.setPlaceholderText('Создать вопрос')
         self.createqw.setFont(QFont('Intro Cond Black Free', 10))
@@ -33,25 +38,30 @@ class Create_work(QWidget):
         self.wr = QLabel('Ответ ученика', self)
         self.wr.setFont(QFont('Intro Cond Black Free', 10))
         self.wr.move(50, 130)
+        self.wr.setStyleSheet('color: rgb(255, 255, 255);')
         self.choice1 = QRadioButton('Тестовый ответ', self)
         self.choice1.setFont(QFont('Intro Cond Black Free', 10))
         self.choice1.move(50, 180)
         self.choice1.clicked.connect(self.manychoice)
+        self.choice1.setStyleSheet('color: rgb(255, 255, 255);')
         self.choice2 = QRadioButton('Ручной ввод', self)
         self.choice2.setFont(QFont('Intro Cond Black Free', 10))
         self.choice2.move(50, 230)
         self.choice2.clicked.connect(self.onechoice)
+        self.choice2.setStyleSheet('color: rgb(255, 255, 255);')
         self.li = 1
         self.number = QLabel(f'Страница {self.li}', self)
         self.number.setFont(QFont('Intro Cond Black Free', 15))
         self.number.setFixedSize(500, 30)
         self.number.move(50, 670)
+        self.number.setStyleSheet('color: rgb(255, 255, 255);')
         self.bd = [[None, None, None]]
         self.create = QPushButton('Добавить', self)
         self.create.setFont(QFont('Intro Cond Black Free', 15))
         self.create.setFixedSize(200, 30)
         self.create.move(1030, 670)
         self.create.clicked.connect(self.adli)
+        self.create.setStyleSheet('background: #FFDD33;')
         self.select = 'None'
 
     def adli(self):
@@ -69,13 +79,16 @@ class Create_work(QWidget):
                 self.bd[self.li - 1][2] = self.otvet.text()
             print(self.bd)
             self.next.setEnabled(True)
+            self.next.setStyleSheet('background: #FFDD33;')
 
     def backlist(self):
         self.li -= 1
         self.number.setText(f'Страница {self.li}')
         if self.li == 1:
             self.back.setEnabled(False)
+            self.back.setStyleSheet('background: #808080;')
         self.next.setEnabled(True)
+        self.next.setStyleSheet('background: #FFDD33;')
         self.checklist()
 
     def checklist(self):
@@ -136,16 +149,19 @@ class Create_work(QWidget):
             self.bd.append(['None', 'None', 'None'])
         self.li += 1
         self.back.setEnabled(True)
+        self.back.setStyleSheet('background: #FFDD33;')
         self.number.setText(f'Страница {self.li}')
-        self.next.setEnabled(False)
+        if self.li == len(self.bd):
+            self.next.setEnabled(False)
+            self.next.setStyleSheet('background: #808080;')
         self.checklist()
-
 
     def onechoice(self):
         self.select = 'False'
         try:
             self.many.hide()
             self.ok.hide()
+            self.yanswer.hide()
             for i in self.spisok:
                 i.hide()
         except Exception:
@@ -171,6 +187,7 @@ class Create_work(QWidget):
         self.ok.move(600, 180)
         self.ok.show()
         self.ok.clicked.connect(self.createqwestions)
+        self.ok.setStyleSheet('background: #FFDD33;')
 
     def createqwestions(self):
         try:
@@ -190,7 +207,6 @@ class Create_work(QWidget):
                     self.spisok.append(self.ch)
             self.yanswer = QLineEdit(self)
             self.yanswer.setPlaceholderText('Правильный ответ')
-            self.yanswer.setFont(QFont('Intro Cond Black Free', 10))
             self.yanswer.setFixedSize(400, 25)
             self.yanswer.move(830, 550)
             self.yanswer.show()
@@ -239,7 +255,7 @@ class Project(QWidget):
         self.setFixedSize(1280, 720)
 
         self.fon = QLabel(self)
-        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
         self.fon.setFixedSize(1280, 720)
 
         self.info = QLabel('<font color="red">Введите корректные данные пользователя!', self)
@@ -317,17 +333,17 @@ class Project(QWidget):
         for i in self.main_widget:
             i.hide()
         self.hide_menu(False, self.all_widget)
-        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
 
     def stude(self):
-        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
         self.bt_create.setText('Решить')
         for i in self.main_widget:
             i.show()
         self.teacher_or_student = True
 
     def teach(self):
-        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
         self.bt_create.setText('Создать')
         for i in self.main_widget:
             i.show()
