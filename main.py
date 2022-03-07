@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout, QFileDialog
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout, QFileDialog, QRadioButton
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QFontDatabase, QCursor, QCloseEvent
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.Qt import Qt
@@ -11,8 +11,191 @@ class Create_work(QWidget):
         self.UI()
 
     def UI(self):
-        self.setWindowTitle('Project')
+        self.setWindowTitle('Lös-учитель')
         self.setFixedSize(1280, 720)
+        self.back = QPushButton('<', self)
+        self.back.setFont(QFont('', 20))
+        self.back.setFixedSize(30, 200)
+        self.back.move(0, 260)
+        self.back.clicked.connect(self.backlist)
+        self.back.setEnabled(False)
+        self.next = QPushButton('>', self)
+        self.next.setFont(QFont('', 20))
+        self.next.setFixedSize(30, 200)
+        self.next.move(1250, 260)
+        self.next.clicked.connect(self.nextlist)
+        self.next.setEnabled(False)
+        self.createqw = QLineEdit(self)
+        self.createqw.setPlaceholderText('Создать вопрос')
+        self.createqw.setFont(QFont('Intro Cond Black Free', 10))
+        self.createqw.setFixedSize(500, 30)
+        self.createqw.move(50, 50)
+        self.wr = QLabel('Ответ ученика', self)
+        self.wr.setFont(QFont('Intro Cond Black Free', 10))
+        self.wr.move(50, 130)
+        self.choice1 = QRadioButton('Тестовый ответ', self)
+        self.choice1.setFont(QFont('Intro Cond Black Free', 10))
+        self.choice1.move(50, 180)
+        self.choice1.clicked.connect(self.manychoice)
+        self.choice2 = QRadioButton('Ручной ввод', self)
+        self.choice2.setFont(QFont('Intro Cond Black Free', 10))
+        self.choice2.move(50, 230)
+        self.choice2.clicked.connect(self.onechoice)
+        self.li = 1
+        self.number = QLabel(f'Страница {self.li}', self)
+        self.number.setFont(QFont('Intro Cond Black Free', 15))
+        self.number.setFixedSize(500, 30)
+        self.number.move(50, 670)
+        self.bd = [[None, None, None]]
+        self.create = QPushButton('Добавить', self)
+        self.create.setFont(QFont('Intro Cond Black Free', 15))
+        self.create.setFixedSize(200, 30)
+        self.create.move(1030, 670)
+        self.create.clicked.connect(self.adli)
+        self.select = 'None'
+
+    def adli(self):
+        if self.select != 'None':
+            self.bd[self.li - 1][0] = self.createqw.text()
+            self.bd[self.li - 1][1] = self.select
+            if self.select == 'True':
+                sp = list()
+                print(self.spisok)
+                for i in self.spisok:
+                    sp.append(i.text())
+                sp.append(self.yanswer.text())
+                self.bd[self.li - 1][2] = sp
+            elif self.select == 'False':
+                self.bd[self.li - 1][2] = self.otvet.text()
+            print(self.bd)
+            self.next.setEnabled(True)
+
+    def backlist(self):
+        self.li -= 1
+        self.number.setText(f'Страница {self.li}')
+        if self.li == 1:
+            self.back.setEnabled(False)
+        self.next.setEnabled(True)
+        self.checklist()
+
+    def checklist(self):
+        if self.bd[self.li - 1][1] == 'True':
+            self.createqw.setText(self.bd[self.li - 1][0])
+            try:
+                self.otvet.hide()
+            except Exception:
+                pass
+            self.many.setText(str(len(self.bd[self.li - 1][2])))
+            self.many.show()
+            self.ok.show()
+            self.yanswer.show()
+            try:
+                for i in self.spisok:
+                    i.hide()
+            except Exception:
+                pass
+            try:
+                self.spisok = list()
+                for i in range(int(self.many.text())):
+                    if i <= 9 and i != int(self.many.text()) - 1:
+                        self.ch = QLineEdit(self.bd[self.li - 1][2][i], self)
+                        self.ch.setFixedSize(400, 25)
+                        self.ch.move(830, 50 + i * 50)
+                        self.ch.show()
+                        self.spisok.append(self.ch)
+                self.yanswer.setText(self.bd[self.li - 1][2][-1])
+            except Exception:
+                pass
+        elif self.bd[self.li - 1][1] == 'False':
+            self.createqw.setText(self.bd[self.li - 1][0])
+            try:
+                self.many.hide()
+                self.ok.hide()
+                self.yanswer.hide()
+            except Exception:
+                pass
+            try:
+                for i in self.spisok:
+                    i.hide()
+            except Exception:
+                pass
+            self.otvet.setText(self.bd[self.li - 1][2])
+            self.otvet.show()
+        elif self.select == 'True':
+            self.createqw.setText('')
+            self.many.setText('')
+            for i in self.spisok:
+                i.hide()
+            self.yanswer.hide()
+        elif self.select == 'False':
+            self.createqw.setText('')
+            self.otvet.setText('')
+
+    def nextlist(self):
+        if self.li == len(self.bd):
+            self.bd.append(['None', 'None', 'None'])
+        self.li += 1
+        self.back.setEnabled(True)
+        self.number.setText(f'Страница {self.li}')
+        self.next.setEnabled(False)
+        self.checklist()
+
+
+    def onechoice(self):
+        self.select = 'False'
+        try:
+            self.many.hide()
+            self.ok.hide()
+            for i in self.spisok:
+                i.hide()
+        except Exception:
+            pass
+        self.otvet = QLineEdit(self)
+        self.otvet.setPlaceholderText('Правильный ответ')
+        self.otvet.setFont(QFont('Intro Cond Black Free', 10))
+        self.otvet.setFixedSize(300, 25)
+        self.otvet.move(300, 180)
+        self.otvet.show()
+
+    def manychoice(self):
+        self.select = 'True'
+        self.many = QLineEdit(self)
+        self.many.setPlaceholderText('Количество вопросов')
+        self.many.setFont(QFont('Intro Cond Black Free', 10))
+        self.many.setFixedSize(300, 25)
+        self.many.move(300, 180)
+        self.many.show()
+        self.ok = QPushButton('Ввод', self)
+        self.ok.setFont(QFont('Intro Cond Black Free', 10))
+        self.ok.setFixedSize(60, 25)
+        self.ok.move(600, 180)
+        self.ok.show()
+        self.ok.clicked.connect(self.createqwestions)
+
+    def createqwestions(self):
+        try:
+            for i in self.spisok:
+                i.hide()
+        except Exception:
+            pass
+        try:
+            self.spisok = list()
+            for i in range(int(self.many.text())):
+                if i <= 9:
+                    self.ch = QLineEdit(self)
+                    self.ch.setPlaceholderText(f'Вариант ответа {i + 1}')
+                    self.ch.setFixedSize(400, 25)
+                    self.ch.move(830, 50 + i * 50)
+                    self.ch.show()
+                    self.spisok.append(self.ch)
+            self.yanswer = QLineEdit(self)
+            self.yanswer.setPlaceholderText('Правильный ответ')
+            self.yanswer.setFont(QFont('Intro Cond Black Free', 10))
+            self.yanswer.setFixedSize(400, 25)
+            self.yanswer.move(830, 550)
+            self.yanswer.show()
+        except Exception:
+            pass
 
 
 class Project(QWidget):
@@ -52,7 +235,7 @@ class Project(QWidget):
             self.redactor.show()
 
     def initUI(self):
-        self.setWindowTitle('Project')
+        self.setWindowTitle('Lös')
         self.setFixedSize(1280, 720)
 
         self.fon = QLabel(self)
