@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDi
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QFontDatabase, QCursor, QCloseEvent
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.Qt import Qt
+from random import choice
 import sys
 
 
@@ -94,7 +95,8 @@ class Create_work(QWidget):
         self.setWindowTitle('Lös-учитель')
         self.setFixedSize(1280, 720)
         self.fon = QLabel(self)
-        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
+        pix = choice(['add/fon/fon4.png', 'add/fon/fon5.png', 'add/fon/fon6.png'])
+        self.fon.setPixmap(QPixmap(pix))
         self.fon.setFixedSize(1280, 720)
         self.back = QPushButton('<', self)
         self.back.setFont(QFont('', 20))
@@ -139,13 +141,13 @@ class Create_work(QWidget):
         self.predsmotr.setFont(QFont(font, 15))
         self.predsmotr.setFixedSize(200, 30)
         self.predsmotr.move(620, 670)
-        self.predsmotr.setStyleSheet('background: #FFDD33;')
+        self.predsmotr.setStyleSheet('background: #F2E3D5;')
         self.predsmotr.clicked.connect(self.smotr)
         self.savetests = QPushButton('Сохранить тест', self)
         self.savetests.setFont(QFont(font, 15))
         self.savetests.setFixedSize(200, 30)
         self.savetests.move(825, 670)
-        self.savetests.setStyleSheet('background: #FFDD33;')
+        self.savetests.setStyleSheet('background: #F2E3D5;')
         self.savetests.clicked.connect(self.savetest)
         self.bd = [['None', 'None', 'None']]
         self.create = QPushButton('Добавить в тест', self)
@@ -153,7 +155,7 @@ class Create_work(QWidget):
         self.create.setFixedSize(200, 30)
         self.create.move(1030, 670)
         self.create.clicked.connect(self.adli)
-        self.create.setStyleSheet('background: #FFDD33;')
+        self.create.setStyleSheet('background: #F2E3D5;')
         self.select = 'None'
 
     def smotr(self):
@@ -200,10 +202,10 @@ class Create_work(QWidget):
                 self.bd[self.li - 1][2] = self.otvet.text()
             print(self.bd)
             self.next.setEnabled(True)
-            self.next.setStyleSheet('background: #FFDD33;')
+            self.next.setStyleSheet('background: #F2E3D5;')
             if self.li != 1:
                 self.back.setEnabled(True)
-                self.back.setStyleSheet('background: #FFDD33;')
+                self.back.setStyleSheet('background: #F2E3D5;')
 
     def backlist(self):
         self.li -= 1
@@ -212,7 +214,7 @@ class Create_work(QWidget):
             self.back.setEnabled(False)
             self.back.setStyleSheet('background: #808080;')
         self.next.setEnabled(True)
-        self.next.setStyleSheet('background: #FFDD33;')
+        self.next.setStyleSheet('background: #F2E3D5;')
         self.checklist()
 
     def checklist(self):
@@ -273,7 +275,7 @@ class Create_work(QWidget):
             self.bd.append(['None', 'None', 'None'])
         self.li += 1
         self.back.setEnabled(True)
-        self.back.setStyleSheet('background: #FFDD33;')
+        self.back.setStyleSheet('background: #F2E3D5;')
         self.number.setText(f'Страница {self.li}')
         if self.li == len(self.bd):
             self.next.setEnabled(False)
@@ -311,7 +313,7 @@ class Create_work(QWidget):
         self.ok.move(600, 180)
         self.ok.show()
         self.ok.clicked.connect(self.createqwestions)
-        self.ok.setStyleSheet('background: #FFDD33;')
+        self.ok.setStyleSheet('background: #F2E3D5;')
 
     def createqwestions(self):
         try:
@@ -365,7 +367,7 @@ class Project(QWidget):
         self.bt_create.clicked.connect(self.doit)
         self.main_widget = [self.bt1, self.bt2, self.bt3, self.bt_create]
         for i in self.main_widget:
-            i.setStyleSheet('background: #FFDD33;')
+            i.setStyleSheet('background: #F2E3D5;')
         self.bt1.clicked.connect(self.menu)
 
     def doit(self):
@@ -389,14 +391,14 @@ class Project(QWidget):
         self.student.setFixedSize(300, 50)
         self.student.move(50, 620)
         self.student.clicked.connect(self.stude)
-        self.student.setStyleSheet('background: #FFDD33;')
+        self.student.setStyleSheet('background: #F2E3D5;')
 
         self.teacher = QPushButton('Учитель', self)
         self.teacher.setFont(QFont(font, 15))
         self.teacher.setFixedSize(300, 50)
         self.teacher.move(355, 620)
         self.teacher.clicked.connect(self.teach)
-        self.teacher.setStyleSheet('background: #FFDD33;')
+        self.teacher.setStyleSheet('background: #F2E3D5;')
 
         self.teacher_or_student = None
 
@@ -425,7 +427,7 @@ class Project(QWidget):
     def stude(self):
         for i in self.all_widget:
             i.hide()
-        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon2.png'))
         self.bt_create.setText('Решить')
         for i in self.main_widget:
             i.show()
@@ -434,7 +436,7 @@ class Project(QWidget):
     def teach(self):
         for i in self.all_widget:
             i.hide()
-        self.fon.setPixmap(QPixmap('add/fon/fon1.png'))
+        self.fon.setPixmap(QPixmap('add/fon/fon3.png'))
         self.bt_create.setText('Создать')
         for i in self.main_widget:
             i.show()
