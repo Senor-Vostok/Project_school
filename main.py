@@ -34,7 +34,8 @@ class Smotr(QWidget):
             self.answer.setFixedSize(500, 20)
             self.mainstick.addWidget(self.answer, alignment=Qt.AlignCenter)
         else:
-            self.gb = QGroupBox('варианты', self)
+            self.gb = QGroupBox('Варианты', self)
+            self.gb.setFont(QFont(font, 13))
             self.gb.setFixedSize(500, 300)
             self.sp = ['None'] * (len(self.bd[self.number][2]) - 1)
             self.ms = QVBoxLayout(self)
@@ -77,11 +78,11 @@ class Smotr(QWidget):
         self.setWindowTitle('Lös-ученик')
         self.setFixedSize(640, 360)
         self.listnumber = QLabel(f'Страница: {self.number + 1}/{len(self.bd)}', self)
-        self.listnumber.setFont(QFont(font, 10))
+        self.listnumber.setFont(QFont(font, 15))
         self.listnumber.move(10, 10)
         self.mainstick = QVBoxLayout(self)
         self.qwestion = QLabel(self.bd[self.number][0], self)
-        self.qwestion.setFont(QFont(font, 10))
+        self.qwestion.setFont(QFont(font, 15))
         self.mainstick.addWidget(self.qwestion, alignment=Qt.AlignCenter)
         self.check()
 
@@ -114,20 +115,20 @@ class Create_work(QWidget):
         self.next.setStyleSheet('background: #808080;')
         self.createqw = QLineEdit(self)
         self.createqw.setPlaceholderText('Создать вопрос')
-        self.createqw.setFont(QFont(font, 10))
+        self.createqw.setFont(QFont(font, 15))
         self.createqw.setFixedSize(500, 30)
         self.createqw.move(50, 50)
-        self.wr = QLabel('Ответ ученика', self)
-        self.wr.setFont(QFont(font, 10))
+        self.wr = QLabel(' Ответ ученика', self)
+        self.wr.setFont(QFont(font, 15))
         self.wr.move(50, 130)
         self.wr.setStyleSheet('color: rgb(255, 255, 255);')
         self.choice1 = QRadioButton('Тестовый ответ', self)
-        self.choice1.setFont(QFont(font, 10))
+        self.choice1.setFont(QFont(font, 15))
         self.choice1.move(50, 180)
         self.choice1.clicked.connect(self.manychoice)
         self.choice1.setStyleSheet('color: rgb(255, 255, 255);')
         self.choice2 = QRadioButton('Ручной ввод', self)
-        self.choice2.setFont(QFont(font, 10))
+        self.choice2.setFont(QFont(font, 15))
         self.choice2.move(50, 230)
         self.choice2.clicked.connect(self.onechoice)
         self.choice2.setStyleSheet('color: rgb(255, 255, 255);')
@@ -189,23 +190,53 @@ class Create_work(QWidget):
 
     def adli(self):
         if self.select != 'None':
-            self.bd[self.li - 1][0] = self.createqw.text()
+            yn = True
+            if len(self.createqw.text()) > 0:
+                self.bd[self.li - 1][0] = self.createqw.text()
+                self.createqw.setStyleSheet('background: rgb(255, 255, 255);')
+            else:
+                self.createqw.setStyleSheet('background: rgb(255, 150, 150);')
+                yn = False
             self.bd[self.li - 1][1] = self.select
             if self.select == 'True':
                 sp = list()
-                print(self.spisok)
-                for i in self.spisok:
-                    sp.append(i.text())
-                sp.append(self.yanswer.text())
-                self.bd[self.li - 1][2] = sp
+                try:
+                    for i in self.spisok:
+                        if len(i.text()) > 0:
+                            sp.append(i.text())
+                            i.setStyleSheet('background: rgb(255, 255, 255);')
+                        else:
+                            i.setStyleSheet('background: rgb(255, 150, 150);')
+                            yn = False
+                    if len(self.yanswer.text()) > 0:
+                        sp.append(self.yanswer.text())
+                        self.yanswer.setStyleSheet('background: rgb(255, 255, 255);')
+                    else:
+                        self.yanswer.setStyleSheet('background: rgb(255, 150, 150);')
+                        yn = False
+                    self.bd[self.li - 1][2] = sp
+                    self.many.setStyleSheet('background: rgb(255, 255, 255);')
+                except Exception:
+                    self.many.setStyleSheet('background: rgb(255, 150, 150);')
+                    yn = False
             elif self.select == 'False':
-                self.bd[self.li - 1][2] = self.otvet.text()
+                if len(self.otvet.text()) > 0:
+                    self.bd[self.li - 1][2] = self.otvet.text()
+                    self.otvet.setStyleSheet('background: rgb(255, 255, 255);')
+                else:
+                    self.otvet.setStyleSheet('background: rgb(255, 150, 150);')
+                    yn = False
             print(self.bd)
-            self.next.setEnabled(True)
-            self.next.setStyleSheet('background: #F2E3D5;')
-            if self.li != 1:
-                self.back.setEnabled(True)
-                self.back.setStyleSheet('background: #F2E3D5;')
+            print('----------')
+            if yn:
+                self.next.setEnabled(True)
+                self.next.setStyleSheet('background: #F2E3D5;')
+                if self.li != 1:
+                    self.back.setEnabled(True)
+                    self.back.setStyleSheet('background: #F2E3D5;')
+            else:
+                self.bd[self.li - 1] = ['None', 'None', 'None']
+            print(self.bd)
 
     def backlist(self):
         self.li -= 1
@@ -224,7 +255,7 @@ class Create_work(QWidget):
                 self.otvet.hide()
             except Exception:
                 pass
-            self.many.setText(str(len(self.bd[self.li - 1][2])))
+            self.many.setText(str(len(self.bd[self.li - 1][2]) - 1))
             self.many.show()
             self.ok.show()
             self.yanswer.show()
@@ -236,13 +267,14 @@ class Create_work(QWidget):
             try:
                 self.spisok = list()
                 for i in range(int(self.many.text())):
-                    if i <= 9 and i != int(self.many.text()) - 1:
-                        self.ch = QLineEdit(self.bd[self.li - 1][2][i], self)
-                        self.ch.setFixedSize(400, 25)
-                        self.ch.move(830, 50 + i * 50)
-                        self.ch.show()
-                        self.spisok.append(self.ch)
+                    self.ch = QLineEdit(self.bd[self.li - 1][2][i], self)
+                    self.ch.setFixedSize(400, 25)
+                    self.ch.move(830, 50 + i * 50)
+                    self.ch.show()
+                    self.ch.setFont(QFont(font, 15))
+                    self.spisok.append(self.ch)
                 self.yanswer.setText(self.bd[self.li - 1][2][-1])
+                self.yanswer.setFont(QFont(font, 15))
             except Exception:
                 pass
         elif self.bd[self.li - 1][1] == 'False':
@@ -294,7 +326,7 @@ class Create_work(QWidget):
             pass
         self.otvet = QLineEdit(self)
         self.otvet.setPlaceholderText('Правильный ответ')
-        self.otvet.setFont(QFont(font, 10))
+        self.otvet.setFont(QFont(font, 15))
         self.otvet.setFixedSize(300, 25)
         self.otvet.move(300, 180)
         self.otvet.show()
@@ -303,12 +335,12 @@ class Create_work(QWidget):
         self.select = 'True'
         self.many = QLineEdit(self)
         self.many.setPlaceholderText('Количество вопросов')
-        self.many.setFont(QFont(font, 10))
+        self.many.setFont(QFont(font, 15))
         self.many.setFixedSize(300, 25)
         self.many.move(300, 180)
         self.many.show()
         self.ok = QPushButton('Ввод', self)
-        self.ok.setFont(QFont(font, 10))
+        self.ok.setFont(QFont(font, 15))
         self.ok.setFixedSize(60, 25)
         self.ok.move(600, 180)
         self.ok.show()
@@ -330,13 +362,15 @@ class Create_work(QWidget):
                     self.ch.setFixedSize(400, 25)
                     self.ch.move(830, 50 + i * 50)
                     self.ch.show()
-                    self.ch.setFont(QFont(font, 10))
+                    self.ch.setFont(QFont(font, 15))
                     self.spisok.append(self.ch)
+                else:
+                    break
             self.yanswer = QLineEdit(self)
             self.yanswer.setPlaceholderText('Правильный ответ')
             self.yanswer.setFixedSize(400, 25)
             self.yanswer.move(830, 550)
-            self.yanswer.setFont(QFont(font, 10))
+            self.yanswer.setFont(QFont(font, 15))
             self.yanswer.show()
         except Exception:
             pass
@@ -350,14 +384,14 @@ class Project(QWidget):
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
         self.bt1.setFixedSize(200, 30)
-        self.bt1.setFont(QFont(font, 10))
+        self.bt1.setFont(QFont(font, 15))
         self.bt1.move(40, 610)
         self.bt2 = QPushButton('Ваши данные', self)
-        self.bt2.setFont(QFont(font, 10))
+        self.bt2.setFont(QFont(font, 15))
         self.bt2.setFixedSize(200, 30)
         self.bt2.move(240, 610)
         self.bt3 = QPushButton('Ошибка?', self)
-        self.bt3.setFont(QFont(font, 10))
+        self.bt3.setFont(QFont(font, 15))
         self.bt3.setFixedSize(200, 30)
         self.bt3.move(440, 610)
         self.bt_create = QPushButton('Создать', self)
@@ -387,14 +421,14 @@ class Project(QWidget):
         self.fon.setFixedSize(1280, 720)
 
         self.student = QPushButton('Ученик', self)
-        self.student.setFont(QFont(font, 15))
+        self.student.setFont(QFont(font, 20))
         self.student.setFixedSize(300, 50)
         self.student.move(50, 620)
         self.student.clicked.connect(self.stude)
         self.student.setStyleSheet('background: #F2E3D5;')
 
         self.teacher = QPushButton('Учитель', self)
-        self.teacher.setFont(QFont(font, 15))
+        self.teacher.setFont(QFont(font, 20))
         self.teacher.setFixedSize(300, 50)
         self.teacher.move(355, 620)
         self.teacher.clicked.connect(self.teach)
@@ -445,8 +479,8 @@ class Project(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    font = 'Ruberoid Semi Bold'
-    QFontDatabase.addApplicationFont('Ruberoid-SemiBold.ttf')
+    font = 'FuturaBookC'
+    QFontDatabase.addApplicationFont('FuturaBookC-Italic.ttf')
     progarm = Project()
     progarm.show()
     sys.exit(app.exec())
