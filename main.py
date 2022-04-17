@@ -7,24 +7,10 @@ import sys
 
 
 class Smotr(QWidget):
-    def __init__(self, bd):
+    def __init__(self, bd, sf=False):
         super().__init__()
-        self.left = QPushButton('<', self)
-        self.right = QPushButton('>', self)
-        self.left.setFont(QFont('', 20))
-        self.right.setFont(QFont('', 20))
-        self.left.setFixedSize(30, 200)
-        self.right.setFixedSize(30, 200)
-        self.left.move(0, 120)
-        self.right.move(610, 120)
-        self.left.clicked.connect(self.leftb)
-        self.right.clicked.connect(self.rightb)
-        self.left.setEnabled(False)
-        self.number = 0
-
+        self.sf = sf
         self.bd = bd
-        if len(self.bd) == 1:
-            self.right.setEnabled(False)
         self.UI()
 
     def check(self):
@@ -77,14 +63,32 @@ class Smotr(QWidget):
     def UI(self):
         self.setWindowTitle('Lös-ученик')
         self.setFixedSize(640, 360)
-        self.listnumber = QLabel(f'Страница: {self.number + 1}/{len(self.bd)}', self)
-        self.listnumber.setFont(QFont(font, 15))
-        self.listnumber.move(10, 10)
-        self.mainstick = QVBoxLayout(self)
-        self.qwestion = QLabel(self.bd[self.number][0], self)
-        self.qwestion.setFont(QFont(font, 15))
-        self.mainstick.addWidget(self.qwestion, alignment=Qt.AlignCenter)
-        self.check()
+        self.number = 0
+        self.left = QPushButton('<', self)
+        self.right = QPushButton('>', self)
+        self.left.setFont(QFont('', 20))
+        self.right.setFont(QFont('', 20))
+        self.left.setFixedSize(30, 200)
+        self.right.setFixedSize(30, 200)
+        self.left.move(0, 120)
+        self.right.move(610, 120)
+        self.left.clicked.connect(self.leftb)
+        self.right.clicked.connect(self.rightb)
+        self.left.setEnabled(False)
+        if len(self.bd) == 1:
+            self.right.setEnabled(False)
+        if not self.sf:
+            self.listnumber = QLabel(f'Страница: {self.number + 1}/{len(self.bd)}', self)
+            self.listnumber.setFont(QFont(font, 15))
+            self.listnumber.move(10, 10)
+            self.listnumber.setFixedSize(200, 30)
+            self.mainstick = QVBoxLayout(self)
+            self.qwestion = QLabel(self.bd[self.number][0], self)
+            self.qwestion.setFont(QFont(font, 15))
+            self.mainstick.addWidget(self.qwestion, alignment=Qt.AlignCenter)
+            self.check()
+        else:
+            pass
 
 
 class Create_work(QWidget):
@@ -381,6 +385,17 @@ class Project(QWidget):
         super().__init__()
         self.initUI()
 
+    def preob(self, texts):
+        texts = texts.split('\n')
+        bd = list()
+        for i in texts:
+            tx = i.split('~~~~~')
+            if tx[1] == 'True':
+                bd.append([tx[0], tx[1], tx[2].split('-----')])
+            else:
+                bd.append(tx)
+        return bd
+
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
         self.bt1.setFixedSize(200, 30)
@@ -407,7 +422,13 @@ class Project(QWidget):
     def doit(self):
         if self.bt_create.text().lower() == 'решить':
             name = QFileDialog.getOpenFileName(self, "Выберите файл", ".")
-            print(name)
+            try:
+                file = open(name[0], mode='rt')
+                file = self.preob(file.read())
+                self.work = Smotr(file)
+                self.work.show()
+            except Exception:
+                pass
         else:
             self.redactor = Create_work()
             self.redactor.show()
