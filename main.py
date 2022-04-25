@@ -11,6 +11,7 @@ class Smotr(QWidget):
         super().__init__()
         self.sf = sf
         self.bd = bd
+        self.answers = [None] * len(self.bd)
         self.UI()
 
     def check(self):
@@ -19,6 +20,8 @@ class Smotr(QWidget):
             self.answer.show()
             self.answer.setFixedSize(500, 20)
             self.mainstick.addWidget(self.answer, alignment=Qt.AlignCenter)
+            if self.answers[self.number] != None:
+                self.answer.setText(self.answers[self.number])
         else:
             self.gb = QGroupBox('Варианты', self)
             self.gb.setFont(QFont(font, 13))
@@ -26,15 +29,25 @@ class Smotr(QWidget):
             self.sp = ['None'] * (len(self.bd[self.number][2]) - 1)
             self.ms = QVBoxLayout(self)
             for i in range(len(self.bd[self.number][2]) - 1):
-                self.sp[i] = QRadioButton(self.bd[self.number][2][i])
+                self.sp[i] = QRadioButton(self.bd[self.number][2][i], self)
+                if self.sp[i].text() == self.answers[self.number]:
+                    self.sp[i].setChecked(True)
                 self.sp[i].show()
                 self.ms.addWidget(self.sp[i])
             self.gb.setLayout(self.ms)
             self.gb.show()
             self.mainstick.addWidget(self.gb, alignment=Qt.AlignCenter)
 
+    def clck(self):
+        if self.bd[self.number][1] == 'True':
+            for i in self.sp:
+                if i.isChecked():
+                    self.answers[self.number] = i.text()
+        else:
+            self.answers[self.number] = self.answer.text()
 
     def leftb(self):
+        self.clck()
         self.right.setEnabled(True)
         self.number -= 1
         self.qwestion.setText(self.bd[self.number][0])
@@ -48,6 +61,7 @@ class Smotr(QWidget):
             self.left.setEnabled(False)
 
     def rightb(self):
+        self.clck()
         self.left.setEnabled(True)
         self.number += 1
         self.qwestion.setText(self.bd[self.number][0])
@@ -77,18 +91,15 @@ class Smotr(QWidget):
         self.left.setEnabled(False)
         if len(self.bd) == 1:
             self.right.setEnabled(False)
-        if not self.sf:
-            self.listnumber = QLabel(f'Страница: {self.number + 1}/{len(self.bd)}', self)
-            self.listnumber.setFont(QFont(font, 15))
-            self.listnumber.move(10, 10)
-            self.listnumber.setFixedSize(200, 30)
-            self.mainstick = QVBoxLayout(self)
-            self.qwestion = QLabel(self.bd[self.number][0], self)
-            self.qwestion.setFont(QFont(font, 15))
-            self.mainstick.addWidget(self.qwestion, alignment=Qt.AlignCenter)
-            self.check()
-        else:
-            pass
+        self.listnumber = QLabel(f'Страница: {self.number + 1}/{len(self.bd)}', self)
+        self.listnumber.setFont(QFont(font, 15))
+        self.listnumber.move(10, 10)
+        self.listnumber.setFixedSize(200, 30)
+        self.mainstick = QVBoxLayout(self)
+        self.qwestion = QLabel(self.bd[self.number][0], self)
+        self.qwestion.setFont(QFont(font, 15))
+        self.mainstick.addWidget(self.qwestion, alignment=Qt.AlignCenter)
+        self.check()
 
 
 class Create_work(QWidget):
