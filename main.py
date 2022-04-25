@@ -76,7 +76,7 @@ class Smotr(QWidget):
 
     def UI(self):
         self.setWindowTitle('Lös-ученик')
-        self.setFixedSize(640, 360)
+        self.setFixedSize(960, 540)
         self.number = 0
         self.left = QPushButton('<', self)
         self.right = QPushButton('>', self)
@@ -84,8 +84,8 @@ class Smotr(QWidget):
         self.right.setFont(QFont('', 20))
         self.left.setFixedSize(30, 200)
         self.right.setFixedSize(30, 200)
-        self.left.move(0, 120)
-        self.right.move(610, 120)
+        self.left.move(0, 170)
+        self.right.move(930, 170)
         self.left.clicked.connect(self.leftb)
         self.right.clicked.connect(self.rightb)
         self.left.setEnabled(False)
@@ -93,7 +93,7 @@ class Smotr(QWidget):
             self.right.setEnabled(False)
         self.listnumber = QLabel(f'Страница: {self.number + 1}/{len(self.bd)}', self)
         self.listnumber.setFont(QFont(font, 15))
-        self.listnumber.move(10, 10)
+        self.listnumber.move(10, 505)
         self.listnumber.setFixedSize(200, 30)
         self.mainstick = QVBoxLayout(self)
         self.qwestion = QLabel(self.bd[self.number][0], self)
