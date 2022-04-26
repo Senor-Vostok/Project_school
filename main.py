@@ -9,10 +9,45 @@ import sys
 class Smotr(QWidget):
     def __init__(self, bd, sf=False):
         super().__init__()
+        self.fon = QLabel(self)
+        self.fon.setFixedSize(960, 540)
+        self.fon.setPixmap(QPixmap('add/fon/fon_stud.png'))
+        self.wh = False
         self.sf = sf
         self.bd = bd
         self.answers = [None] * len(self.bd)
+        self.moved = 64
+        self.timer = QTimer(self)
+        self.timer.setInterval(10)
+        self.timer.timeout.connect(self.animation)
+        self.timer.stop()
+        self.llen = 960 // len(self.answers)
+        self.mainpolz = QLabel(self)
+        self.mainpolz.setFixedSize(self.llen, 25)
+        self.mainpolz.setStyleSheet('background: rgb(100, 100, 100);')
+        self.polz = list()
+        for i in range(len(self.answers)):
+            s = QLabel(self)
+            s.setFixedSize(self.llen, 20)
+            s.setStyleSheet('background: rgb(200, 200, 200);')
+            s.move(self.llen * i, 0)
+            self.polz.append(s)
         self.UI()
+
+    def animation(self):
+        if self.mainpolz.x() < self.llen * self.number and not self.wh:
+            self.mainpolz.move(self.mainpolz.x() + self.moved, 0)
+            if self.moved > 16:
+                self.moved = self.moved // 2
+        elif self.mainpolz.x() > self.llen * self.number and self.wh:
+            self.mainpolz.move(self.mainpolz.x() - self.moved, 0)
+            if self.moved > 16:
+                self.moved = self.moved // 2
+        else:
+            self.moved = 64
+            self.mainpolz.move(self.llen * self.number, 0)
+            self.wh = False
+            self.timer.stop()
 
     def check(self):
         if self.bd[self.number][1] == 'False':
@@ -42,14 +77,19 @@ class Smotr(QWidget):
         if self.bd[self.number][1] == 'True':
             for i in self.sp:
                 if i.isChecked():
+                    self.polz[self.number].setStyleSheet('background: #24a319;')
                     self.answers[self.number] = i.text()
         else:
-            self.answers[self.number] = self.answer.text()
+            if len(self.answer.text()) != 0:
+                self.polz[self.number].setStyleSheet('background: #24a319;')
+                self.answers[self.number] = self.answer.text()
 
     def leftb(self):
         self.clck()
         self.right.setEnabled(True)
         self.number -= 1
+        self.wh = True
+        self.timer.start()
         self.qwestion.setText(self.bd[self.number][0])
         self.listnumber.setText(f'Страница: {self.number + 1}/{len(self.bd)}')
         try:
@@ -64,6 +104,7 @@ class Smotr(QWidget):
         self.clck()
         self.left.setEnabled(True)
         self.number += 1
+        self.timer.start()
         self.qwestion.setText(self.bd[self.number][0])
         self.listnumber.setText(f'Страница: {self.number + 1}/{len(self.bd)}')
         try:
@@ -159,6 +200,7 @@ class Create_work(QWidget):
         self.predsmotr.move(620, 670)
         self.predsmotr.setStyleSheet('background: #F2E3D5;')
         self.predsmotr.clicked.connect(self.smotr)
+        self.predsmotr.setEnabled(False)
         self.savetests = QPushButton('Сохранить тест', self)
         self.savetests.setFont(QFont(font, 15))
         self.savetests.setFixedSize(200, 30)
@@ -173,6 +215,12 @@ class Create_work(QWidget):
         self.create.clicked.connect(self.adli)
         self.create.setStyleSheet('background: #F2E3D5;')
         self.select = 'None'
+
+    def check_smotr(self):
+        if ['None', 'None', 'None'] in self.bd:
+            self.predsmotr.setEnabled(False)
+        else:
+            self.predsmotr.setEnabled(True)
 
     def smotr(self):
         self.smotret = Smotr(self.bd)
@@ -251,10 +299,12 @@ class Create_work(QWidget):
                     self.back.setStyleSheet('background: #F2E3D5;')
             else:
                 self.bd[self.li - 1] = ['None', 'None', 'None']
+            self.predsmotr.setEnabled(True)
             print(self.bd)
 
     def backlist(self):
         self.li -= 1
+        self.check_smotr()
         self.number.setText(f'Страница {self.li}')
         if self.li == 1:
             self.back.setEnabled(False)
@@ -321,6 +371,7 @@ class Create_work(QWidget):
         if self.li == len(self.bd):
             self.bd.append(['None', 'None', 'None'])
         self.li += 1
+        self.check_smotr()
         self.back.setEnabled(True)
         self.back.setStyleSheet('background: #F2E3D5;')
         self.number.setText(f'Страница {self.li}')
