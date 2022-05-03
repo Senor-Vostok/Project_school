@@ -1,13 +1,44 @@
-from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout, QFileDialog, QRadioButton
+from PyQt5.QtWidgets import QLabel, QPushButton, QWidget, QApplication, QInputDialog, QLineEdit, QVBoxLayout, QGroupBox, QHBoxLayout, QFileDialog, QRadioButton, QMessageBox
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QFontDatabase, QCursor, QCloseEvent
 from PyQt5.QtCore import QSize, QTimer
 from PyQt5.Qt import Qt
 from random import choice
 import sys
 
+personality_answer = None
+
+
+class YN(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.UI()
+
+    def UI(self):
+        self.setFixedSize(250, 100)
+        self.setWindowTitle('Подтверждение')
+        self.mainstick = QVBoxLayout(self)
+        self.label = QLabel('Вы уверены, что хотите завершить тест?\nНекоторые задание не сделаны', self)
+        self.stick = QHBoxLayout(self)
+        self.ybt = QPushButton('Да', self)
+        self.nbt = QPushButton('Нет', self)
+        self.ybt.clicked.connect(self.choice1)
+        self.nbt.clicked.connect(self.choice2)
+        self.stick.addWidget(self.ybt, alignment=Qt.AlignCenter)
+        self.stick.addWidget(self.nbt, alignment=Qt.AlignCenter)
+        self.mainstick.addWidget(self.label, alignment=Qt.AlignCenter)
+        self.mainstick.addLayout(self.stick)
+
+    def choice1(self):
+        global personality_answer
+        personality_answer = True
+        self.close()
+
+    def choice2(self):
+        self.close()
+
 
 class Smotr(QWidget):
-    def __init__(self, bd, sf=False):
+    def __init__(self, bd, sf=False, local=None):
         super().__init__()
         self.fon = QLabel(self)
         self.fon.setFixedSize(960, 540)
@@ -15,6 +46,11 @@ class Smotr(QWidget):
         self.wh = False
         self.sf = sf
         self.bd = bd
+        self.local = local
+        self.yanswers = [i[2] for i in self.bd]
+        for i in range(len(self.yanswers)):
+            if self.bd[i][1] == 'True':
+                self.yanswers[i] = self.bd[i][2][-1]
         self.answers = [None] * len(self.bd)
         self.moved = 64
         self.timer = QTimer(self)
@@ -24,7 +60,7 @@ class Smotr(QWidget):
         self.llen = 960 // len(self.answers)
         self.mainpolz = QLabel(self)
         self.mainpolz.setFixedSize(self.llen, 25)
-        self.mainpolz.setStyleSheet('background: rgb(100, 100, 100);')
+        self.mainpolz.setStyleSheet('background: #F2E3D5;')
         self.polz = list()
         for i in range(len(self.answers)):
             s = QLabel(self)
@@ -59,12 +95,15 @@ class Smotr(QWidget):
                 self.answer.setText(self.answers[self.number])
         else:
             self.gb = QGroupBox('Варианты', self)
+            self.gb.setStyleSheet('color: rgb(255, 255, 255);')
             self.gb.setFont(QFont(font, 13))
             self.gb.setFixedSize(500, 300)
             self.sp = ['None'] * (len(self.bd[self.number][2]) - 1)
             self.ms = QVBoxLayout(self)
             for i in range(len(self.bd[self.number][2]) - 1):
                 self.sp[i] = QRadioButton(self.bd[self.number][2][i], self)
+                self.sp[i].setStyleSheet('color: rgb(0, 0, 0);')
+                self.sp[i].setFont(QFont(font, 12))
                 if self.sp[i].text() == self.answers[self.number]:
                     self.sp[i].setChecked(True)
                 self.sp[i].show()
@@ -138,9 +177,70 @@ class Smotr(QWidget):
         self.listnumber.setFixedSize(200, 30)
         self.mainstick = QVBoxLayout(self)
         self.qwestion = QLabel(self.bd[self.number][0], self)
+        self.qwestion.setStyleSheet('color: rgb(255, 255, 255);')
         self.qwestion.setFont(QFont(font, 15))
         self.mainstick.addWidget(self.qwestion, alignment=Qt.AlignCenter)
+        self.complete = QPushButton('Завершить', self)
+        self.complete.setFont(QFont(font, 15))
+        self.complete.setFixedSize(150, 30)
+        self.complete.move(800, 500)
+        self.complete.setStyleSheet('background: #F2E3D5;')
+        self.complete.clicked.connect(self.completele)
+        self.rezul = QLabel('100', self)
+        self.rezul.setFont(QFont(font, 70))
+        self.rezul.setStyleSheet('color: #F2E3D5;')
+        self.mainstick.addWidget(self.rezul, alignment=Qt.AlignCenter)
+        self.rezul.hide()
         self.check()
+
+    def procent(self):
+        allans = len(self.answers)
+        seclan = 0
+        for i in range(len(self.answers)):
+            if self.answers[i] == self.yanswers[i]:
+                seclan += 1
+        return str((seclan * 100) // allans)
+
+    def completele(self):
+        global personality_answer
+        self.clck()
+        if self.answers[self.number] != None:
+            self.answer.setText(self.answers[self.number])
+        if personality_answer == None:
+            if None in self.answers:
+                self.win = YN()
+                self.win.show()
+            else:
+                self.final()
+        else:
+            personality_answer = None
+            self.final()
+
+    def final(self):
+        self.qwestion.deleteLater()
+        self.complete.deleteLater()
+        self.listnumber.deleteLater()
+        try:
+            self.answer.deleteLater()
+        except Exception:
+            self.gb.deleteLater()
+        self.left.deleteLater()
+        self.right.deleteLater()
+        for i in self.polz:
+            i.deleteLater()
+        self.mainpolz.deleteLater()
+        self.fon.setPixmap(QPixmap('add/fon/fon_stud_final.png'))
+        self.rezul.show()
+        self.rezul.setText(self.procent())
+        self.opovesh = QLabel('Покажи учителю свой результат', self)
+        self.opovesh.setFixedSize(500, 30)
+        self.opovesh.setFont(QFont(font, 25))
+        self.opovesh.move(275, 505)
+        self.opovesh.setStyleSheet('color: #F2E3D5;')
+        file = open(self.local, mode='w')
+        file.write(f'FINAL\n{self.procent()}')
+        file.close()
+        self.opovesh.show()
 
 
 class Create_work(QWidget):
@@ -487,7 +587,7 @@ class Project(QWidget):
             try:
                 file = open(name[0], mode='rt')
                 file = self.preob(file.read())
-                self.work = Smotr(file)
+                self.work = Smotr(file, True, name[0])
                 self.work.show()
             except Exception:
                 pass
