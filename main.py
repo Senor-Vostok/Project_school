@@ -40,35 +40,52 @@ class YN(QWidget):
 class Smotr(QWidget):
     def __init__(self, bd, sf=False, local=None):
         super().__init__()
-        self.fon = QLabel(self)
-        self.fon.setFixedSize(960, 540)
-        self.fon.setPixmap(QPixmap('add/fon/fon_stud.png'))
-        self.wh = False
         self.sf = sf
-        self.bd = bd
-        self.local = local
-        self.yanswers = [i[2] for i in self.bd]
-        for i in range(len(self.yanswers)):
-            if self.bd[i][1] == 'True':
-                self.yanswers[i] = self.bd[i][2][-1]
-        self.answers = [None] * len(self.bd)
-        self.moved = 64
-        self.timer = QTimer(self)
-        self.timer.setInterval(10)
-        self.timer.timeout.connect(self.animation)
-        self.timer.stop()
-        self.llen = 960 // len(self.answers)
-        self.mainpolz = QLabel(self)
-        self.mainpolz.setFixedSize(self.llen, 25)
-        self.mainpolz.setStyleSheet('background: #F2E3D5;')
-        self.polz = list()
-        for i in range(len(self.answers)):
-            s = QLabel(self)
-            s.setFixedSize(self.llen, 20)
-            s.setStyleSheet('background: rgb(200, 200, 200);')
-            s.move(self.llen * i, 0)
-            self.polz.append(s)
-        self.UI()
+        if bd[0] != 'FINAL':
+            self.fon = QLabel(self)
+            self.fon.setFixedSize(960, 540)
+            self.fon.setPixmap(QPixmap('add/fon/fon_stud.png'))
+            self.wh = False
+            self.bd = bd
+            self.local = local
+            self.yanswers = [i[2] for i in self.bd]
+            for i in range(len(self.yanswers)):
+                if self.bd[i][1] == 'True':
+                    self.yanswers[i] = self.bd[i][2][-1]
+            self.answers = [None] * len(self.bd)
+            self.moved = 64
+            self.timer = QTimer(self)
+            self.timer.setInterval(10)
+            self.timer.timeout.connect(self.animation)
+            self.timer.stop()
+            self.llen = 960 // len(self.answers)
+            self.mainpolz = QLabel(self)
+            self.mainpolz.setFixedSize(self.llen, 25)
+            self.mainpolz.setStyleSheet('background: #F2E3D5;')
+            self.polz = list()
+            for i in range(len(self.answers)):
+                s = QLabel(self)
+                s.setFixedSize(self.llen, 20)
+                s.setStyleSheet('background: rgb(200, 200, 200);')
+                s.move(self.llen * i, 0)
+                self.polz.append(s)
+            self.UI()
+        else:
+            self.setWindowTitle('Lös-ученик')
+            self.setFixedSize(960, 540)
+            self.fon = QLabel(self)
+            self.fon.setFixedSize(960, 540)
+            self.fon.setPixmap(QPixmap('add/fon/fon_stud_final.png'))
+            self.mainstick = QVBoxLayout(self)
+            self.rezul = QLabel(bd[1], self)
+            self.rezul.setFont(QFont(font, 70))
+            self.rezul.setStyleSheet('color: #F2E3D5;')
+            self.mainstick.addWidget(self.rezul, alignment=Qt.AlignCenter)
+            self.opovesh = QLabel('Покажи учителю свой результат', self)
+            self.opovesh.setFixedSize(500, 30)
+            self.opovesh.setFont(QFont(font, 25))
+            self.opovesh.move(275, 505)
+            self.opovesh.setStyleSheet('color: #F2E3D5;')
 
     def animation(self):
         if self.mainpolz.x() < self.llen * self.number and not self.wh:
@@ -204,8 +221,6 @@ class Smotr(QWidget):
     def completele(self):
         global personality_answer
         self.clck()
-        if self.answers[self.number] != None:
-            self.answer.setText(self.answers[self.number])
         if personality_answer == None:
             if None in self.answers:
                 self.win = YN()
@@ -237,9 +252,10 @@ class Smotr(QWidget):
         self.opovesh.setFont(QFont(font, 25))
         self.opovesh.move(275, 505)
         self.opovesh.setStyleSheet('color: #F2E3D5;')
-        file = open(self.local, mode='w')
-        file.write(f'FINAL\n{self.procent()}')
-        file.close()
+        if self.sf:
+            file = open(self.local, mode='w')
+            file.write(f'FINAL\n{self.procent()}')
+            file.close()
         self.opovesh.show()
 
 
@@ -315,6 +331,27 @@ class Create_work(QWidget):
         self.create.clicked.connect(self.adli)
         self.create.setStyleSheet('background: #F2E3D5;')
         self.select = 'None'
+        self.deletelist = QPushButton('Удалить страницу', self)
+        self.deletelist.setFont(QFont(font, 15))
+        self.deletelist.setFixedSize(200, 30)
+        self.deletelist.move(415, 670)
+        self.deletelist.setStyleSheet('background: #F2E3D5;')
+        self.deletelist.setEnabled(False)
+        self.deletelist.clicked.connect(self.dellist)
+
+    def dellist(self):
+        print(self.bd)
+        self.bd.remove(self.bd[self.li - 1])
+        print(self.bd)
+        print(self.li)
+        if self.li > 1:
+            self.li += 1
+            self.backlist()
+        else:
+            self.li -= 1
+            self.nextlist()
+            self.back.setEnabled(False)
+            self.back.setStyleSheet('background: #808080;')
 
     def check_smotr(self):
         if ['None', 'None', 'None'] in self.bd:
@@ -345,6 +382,8 @@ class Create_work(QWidget):
         return sp2
 
     def savetest(self):
+        if ['None', 'None', 'None'] in self.bd:
+            self.bd = self.bd[:-1]
         name = QFileDialog.getSaveFileName(self, 'Сохраните файл', None, '.los')
         name = name[0] + name[1]
         if name:
@@ -411,9 +450,21 @@ class Create_work(QWidget):
             self.back.setStyleSheet('background: #808080;')
         self.next.setEnabled(True)
         self.next.setStyleSheet('background: #F2E3D5;')
+        if len(self.bd) == 1:
+            self.deletelist.setEnabled(False)
+        else:
+            self.deletelist.setEnabled(True)
         self.checklist()
 
     def checklist(self):
+        try:
+            for i in self.spisok:
+                i.hide()
+            self.many.hide()
+            self.ok.hide()
+            self.yanswer.hide()
+        except Exception:
+            self.otvet.hide()
         if self.bd[self.li - 1][1] == 'True':
             self.createqw.setText(self.bd[self.li - 1][0])
             try:
@@ -468,6 +519,7 @@ class Create_work(QWidget):
             self.otvet.setText('')
 
     def nextlist(self):
+        self.deletelist.setEnabled(True)
         if self.li == len(self.bd):
             self.bd.append(['None', 'None', 'None'])
         self.li += 1
@@ -549,14 +601,17 @@ class Project(QWidget):
 
     def preob(self, texts):
         texts = texts.split('\n')
-        bd = list()
-        for i in texts:
-            tx = i.split('~~~~~')
-            if tx[1] == 'True':
-                bd.append([tx[0], tx[1], tx[2].split('-----')])
-            else:
-                bd.append(tx)
-        return bd
+        if texts[0] == 'FINAL':
+            return texts
+        else:
+            bd = list()
+            for i in texts:
+                tx = i.split('~~~~~')
+                if tx[1] == 'True':
+                    bd.append([tx[0], tx[1], tx[2].split('-----')])
+                else:
+                    bd.append(tx)
+            return bd
 
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
