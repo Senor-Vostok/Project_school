@@ -340,25 +340,33 @@ class Create_work(QWidget):
         self.deletelist.clicked.connect(self.dellist)
 
     def dellist(self):
-        if self.bd[self.li - 1] != ['None', 'None', 'None']:
-            print(self.bd)
-            self.bd.remove(self.bd[self.li - 1])
-            print(self.bd)
-            print(self.li)
-            if self.li > 1:
-                self.li += 1
-                self.backlist()
-            else:
-                self.li -= 1
-                self.nextlist()
+        print(self.bd)
+        self.bd.remove(self.bd[self.li - 1])
+        print(self.bd)
+        print(self.li)
+        if len(self.bd) >= self.li:
+            self.checklist()
+            if len(self.bd) == self.li:
+                self.next.setEnabled(False)
+                self.next.setStyleSheet('background: #808080;')
+        else:
+            self.li -= 1
+            self.checklist()
+            self.predsmotr.setEnabled(True)
+            self.savetests.setEnabled(True)
+            if self.li == 1:
                 self.back.setEnabled(False)
                 self.back.setStyleSheet('background: #808080;')
+        if self.li == 1:
+            self.deletelist.setEnabled(False)
 
     def check_smotr(self):
         if ['None', 'None', 'None'] in self.bd:
             self.predsmotr.setEnabled(False)
+            self.savetests.setEnabled(False)
         else:
             self.predsmotr.setEnabled(True)
+            self.savetests.setEnabled(True)
 
     def smotr(self):
         self.smotret = Smotr(self.bd)
@@ -383,7 +391,7 @@ class Create_work(QWidget):
         return sp2
 
     def savetest(self):
-        if ['None', 'None', 'None'] in self.bd:
+        if ['None', 'None', 'None'] in self.bd and len(self.bd) > 1:
             self.bd = self.bd[:-1]
         name = QFileDialog.getSaveFileName(self, 'Сохраните файл', None, '.los')
         name = name[0] + name[1]
@@ -440,6 +448,7 @@ class Create_work(QWidget):
             else:
                 self.bd[self.li - 1] = ['None', 'None', 'None']
             self.predsmotr.setEnabled(True)
+            self.savetests.setEnabled(True)
             print(self.bd)
 
     def backlist(self):
