@@ -340,18 +340,19 @@ class Create_work(QWidget):
         self.deletelist.clicked.connect(self.dellist)
 
     def dellist(self):
-        print(self.bd)
-        self.bd.remove(self.bd[self.li - 1])
-        print(self.bd)
-        print(self.li)
-        if self.li > 1:
-            self.li += 1
-            self.backlist()
-        else:
-            self.li -= 1
-            self.nextlist()
-            self.back.setEnabled(False)
-            self.back.setStyleSheet('background: #808080;')
+        if self.bd[self.li - 1] != ['None', 'None', 'None']:
+            print(self.bd)
+            self.bd.remove(self.bd[self.li - 1])
+            print(self.bd)
+            print(self.li)
+            if self.li > 1:
+                self.li += 1
+                self.backlist()
+            else:
+                self.li -= 1
+                self.nextlist()
+                self.back.setEnabled(False)
+                self.back.setStyleSheet('background: #808080;')
 
     def check_smotr(self):
         if ['None', 'None', 'None'] in self.bd:
@@ -615,37 +616,34 @@ class Project(QWidget):
 
     def start_kit(self):
         self.bt1 = QPushButton('Главная', self)
-        self.bt1.setFixedSize(200, 30)
+        self.bt1.setFixedSize(300, 30)
         self.bt1.setFont(QFont(font, 15))
         self.bt1.move(40, 610)
-        self.bt2 = QPushButton('Ваши данные', self)
-        self.bt2.setFont(QFont(font, 15))
-        self.bt2.setFixedSize(200, 30)
-        self.bt2.move(240, 610)
         self.bt3 = QPushButton('Ошибка?', self)
         self.bt3.setFont(QFont(font, 15))
-        self.bt3.setFixedSize(200, 30)
-        self.bt3.move(440, 610)
+        self.bt3.setFixedSize(300, 30)
+        self.bt3.move(340, 610)
         self.bt_create = QPushButton('Создать', self)
         self.bt_create.setFont(QFont(font, 20))
         self.bt_create.setFixedSize(600, 40)
         self.bt_create.move(40, 645)
         self.bt_create.clicked.connect(self.doit)
-        self.main_widget = [self.bt1, self.bt2, self.bt3, self.bt_create]
+        self.main_widget = [self.bt1, self.bt3, self.bt_create]
         for i in self.main_widget:
             i.setStyleSheet('background: #F2E3D5;')
         self.bt1.clicked.connect(self.menu)
 
     def doit(self):
         if self.bt_create.text().lower() == 'решить':
-            name = QFileDialog.getOpenFileName(self, "Выберите файл", ".")
+            name = QFileDialog.getOpenFileName(self, "Выберите файл", ".", '*.los')
             try:
-                file = open(name[0], mode='rt')
-                file = self.preob(file.read())
-                self.work = Smotr(file, True, name[0])
-                self.work.show()
+                if len(''.join(name)) != 0:
+                    file = open(name[0], mode='rt')
+                    file = self.preob(file.read())
+                    self.work = Smotr(file, True, name[0])
+                    self.work.show()
             except Exception:
-                pass
+                QMessageBox.warning(self, 'Ошибка', '\tФайл повреждён!\t', QMessageBox.Yes | QMessageBox.No)
         else:
             self.redactor = Create_work()
             self.redactor.show()
